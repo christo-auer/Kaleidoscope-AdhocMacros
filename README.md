@@ -1,5 +1,4 @@
-# Kaleidoscope-KeyLogger
-
+# Kaleidoscope-AdhocMacros
 
 TODO
 
