@@ -1,6 +1,6 @@
 /* -*- mode: c++ -*-
- * Kaleidoscope-KeyLogger -- A key logger
- * Copyright (C) 2016, 2017  Gergely Nagy
+ * Kaleidoscope-Adhoc-Macros -- Adhoc Macros
+ * Copyright (C) 2018 Christopher Auer
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,19 +19,56 @@
 #pragma once
 
 #include <Kaleidoscope.h>
-
+#define ADHOC_MACROS_FLASH_INTERVAL 500
+#define ADHOC_MACROS_MAX_REPETITIONS 1000
 namespace kaleidoscope {
 
-class KeyLogger : public KaleidoscopePlugin {
+class AdhocMacros : public KaleidoscopePlugin {
  public:
-  KeyLogger(void);
+  typedef struct {
+    Key mappedKey;
+    byte row;
+    byte col;
+    uint8_t keyState;
+  } AdhocKeyEvent;
+
+  AdhocMacros(void);
 
   void begin(void) final;
 
+
+  // macro
+  static AdhocKeyEvent* adhocMacro;
+  static uint16_t maxAdhocMacroLength;
+
+  // flashing effect
+  static byte flashRow;
+  static byte flashCol;
+  static cRGB flashColor;
+
+  // recording
+  static void startRecording();
+  static void stopRecording();
+  static void toggleRecording();
+
+  // replaying
+  static void replay();
+  static void abortReplay();
+  static void toggleReplay();
+  static void repeatAddDigit(int digit);
+  static void resetRepeat();
+
+
  private:
-  static Key logger(Key mapped_key, byte row, byte col, uint8_t key_state);
+  static Key record(Key mappedKey, byte row, byte col, uint8_t keyState);
+  static void logger(Key mappedKey, byte row, byte col, uint8_t keyState);
+  static void loop(bool isPostClear);
+  static bool isRecording;
+  static bool isReplaying;
+  static uint16_t recordingIndex;
+  static uint16_t repeat;
 };
 
 }
 
-extern kaleidoscope::KeyLogger KeyLogger;
+extern kaleidoscope::AdhocMacros AdhocMacros;
